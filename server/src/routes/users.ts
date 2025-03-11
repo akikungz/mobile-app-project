@@ -50,41 +50,51 @@ export const users = new Elysia({ prefix: "/users" })
       return error("Unauthorized", 401);
     }
 
-    const user = await getUser(data.id);
-    return omit(user[0], ["password", "created_at", "updated_at"]);
+    try {
+      const user = await getUser(data.id);
+      return omit(user[0], ["password", "created_at", "updated_at"]);
+    } catch (e) {
+      console.log(e);
+      return error("Internal Server Error", 500);
+    }
   })
   .post("/sign-in", async ({ body, jwt, cookie: { accessToken, refreshToken }, error }) => {
-    const user = await db.select().from(usersTable).where(eq(usersTable.email, body.email));
-    
-    if (user.length === 0) {
-      return error("Unauthorized", 401);
+    try {
+      const user = await db.select().from(usersTable).where(eq(usersTable.email, body.email));
+      
+      if (user.length === 0) {
+        return error("Unauthorized", 401);
+      }
+
+      if (verifyPassword(body.password, user[0].password)) {
+        return error("Unauthorized", 401);
+      }
+
+      const newAccessToken = await jwt.sign({
+        id: user[0].id,
+        exp: expTime.accessToken,
+      });
+
+      const newRefreshToken = await jwt.sign({
+        id: user[0].id,
+        exp: expTime.refreshToken,
+      });
+
+      accessToken.set({ 
+        value: newAccessToken, 
+        expires: new Date(Date.now() + expTime.accessToken * 1000) 
+      });
+
+      refreshToken.set({ 
+        value: newRefreshToken, 
+        expires: new Date(Date.now() + expTime.refreshToken * 1000) 
+      });
+
+      return omit(user[0], ["password", "created_at", "updated_at"]);
+    } catch (e) {
+      console.log(e);
+      return error("Internal Server Error", 500);
     }
-
-    if (!await verifyPassword(body.password, user[0].password)) {
-      return error("Unauthorized", 401);
-    }
-
-    const newAccessToken = await jwt.sign({
-      id: user[0].id,
-      exp: expTime.accessToken,
-    });
-
-    const newRefreshToken = await jwt.sign({
-      id: user[0].id,
-      exp: expTime.refreshToken,
-    });
-
-    accessToken.set({ 
-      value: newAccessToken, 
-      expires: new Date(Date.now() + expTime.accessToken * 1000) 
-    });
-
-    refreshToken.set({ 
-      value: newRefreshToken, 
-      expires: new Date(Date.now() + expTime.refreshToken * 1000) 
-    });
-
-    return omit(user[0], ["password", "created_at", "updated_at"]);
   }, {
     body: t.Object({
       email: t.String(),
@@ -92,18 +102,28 @@ export const users = new Elysia({ prefix: "/users" })
     })
   })
   .post("/sign-up", async ({ body, error }) => {
-    const user = await db.select().from(usersTable).where(eq(usersTable.email, body.email));
-    
-    if (user.length > 0) {
-      return error("Conflict", 409);
+    try {
+      const user = await db.select().from(usersTable).where(eq(usersTable.email, body.email));
+      
+      if (user.length > 0) {
+        return error("Conflict", 409);
+      }
+    } catch (e) {
+      console.log(e);
+      return error("Internal Server Error", 500);
     }
 
-    const newUser = await db.insert(usersTable).values({
-      email: body.email,
-      password: hashPassword(body.password),
-    }).returning();
+    try {
+      const newUser = await db.insert(usersTable).values({
+        email: body.email,
+        password: hashPassword(body.password),
+      }).returning();
 
-    return omit(newUser[0], ["password", "created_at", "updated_at"]);
+      return omit(newUser[0], ["password", "created_at", "updated_at"]);
+    } catch (e) {
+      console.log(e);
+      return error("Internal Server Error", 500);
+    }
   }, {
     body: t.Object({
       email: t.String(),
@@ -112,7 +132,12 @@ export const users = new Elysia({ prefix: "/users" })
   })
 
 export const getUser = (id: number) => {
-  return db.select().from(usersTable).where(eq(usersTable.id, id));
+  try {
+    return db.select().from(usersTable).where(eq(usersTable.id, id));
+  } catch (e) {
+    console.log(e);
+    return [];
+  }
 }
 
 export const hashPassword = (password: string) => {
