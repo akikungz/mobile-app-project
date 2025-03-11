@@ -10,8 +10,16 @@ RUN bun install
 FROM base as runtime
 COPY . /app
 
-# Expose the port
+RUN bun db:generate
+
+RUN bun build --compile --target=bun-linux-x64 ./src/index.ts --outfile myapp
+
+FROM alpine:3.14 as final
+
+WORKDIR /app
+
+COPY --from=runtime /app/myapp /app/myapp
+
 EXPOSE 3000
 
-# Start the server
-CMD ["bun", "run", "src/index.ts"]
+CMD [ "./myapp" ]
