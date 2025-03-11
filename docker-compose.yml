@@ -20,9 +20,9 @@ services:
   server: 
     build: ./server
     ports:
-      - "3000:3000"
+      - "3001:3001"
     environment:
-      - PORT=3000
+      - PORT=3001
       - DATABASE_URI=${DATABASE_URI:-postgres://postgres:postgres@db:5432/postgres}
     env_file:
       - .env
