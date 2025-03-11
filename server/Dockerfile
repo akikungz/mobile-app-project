@@ -1,4 +1,4 @@
-FROM oven/bun:1.2 as base
+FROM oven/bun:1.2 AS base
 
 # Install the necessary packages
 WORKDIR /app
@@ -9,14 +9,14 @@ RUN bun install
 COPY . /app
 RUN bun db:generate
 
-RUN bun build --compile --target=bun-linux-x64 ./src/index.ts --outfile myapp
+RUN bun build --compile --target=bun-linux-x64 ./src/index.ts --outfile ./app
 
-FROM alpine:3.14 as final
+FROM debian:stable-slim AS final
 
 WORKDIR /app
 
-COPY --from=base /app/myapp /app/myapp
+COPY --from=base /app/app /app
 
-EXPOSE 3000
+RUN ls /app -la
 
-CMD [ "/app/myapp" ]
+CMD [ "./app" ]
