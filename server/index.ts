@@ -9,3 +9,5 @@ serve({
     return app.handle(request);
   }
 });
+
+console.log(env);
