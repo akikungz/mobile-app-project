@@ -66,7 +66,7 @@ export const users = new Elysia({ prefix: "/users" })
         return error("Unauthorized", 401);
       }
 
-      if (verifyPassword(body.password, user[0].password)) {
+      if (!verifyPassword(body.password, user[0].password)) {
         return error("Unauthorized", 401);
       }
 
