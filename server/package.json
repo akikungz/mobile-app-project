@@ -10,7 +10,9 @@
   "dependencies": {
     "@elysiajs/cookie": "^0.8.0",
     "@elysiajs/jwt": "^1.2.0",
+    "@elysiajs/node": "^1.2.6",
     "@elysiajs/swagger": "^1.2.2",
+    "argon2": "^0.41.1",
     "dotenv": "^16.4.7",
     "drizzle-orm": "^0.40.0",
     "elysia": "latest",

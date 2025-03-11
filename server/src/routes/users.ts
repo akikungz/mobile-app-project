@@ -1,6 +1,7 @@
-import { password as Password } from "bun";
+// import { password as Password } from "bun";
 import { Elysia, t } from "elysia";
 import { eq } from "drizzle-orm"; 
+import argon2 from "argon2";
 
 import { db } from "@/db";
 import { usersTable } from "@/db/schema";
@@ -59,7 +60,7 @@ export const users = new Elysia({ prefix: "/users" })
       return error("Unauthorized", 401);
     }
 
-    if (!verifyPassword(body.password, user[0].password)) {
+    if (!await verifyPassword(body.password, user[0].password)) {
       return error("Unauthorized", 401);
     }
 
@@ -115,9 +116,11 @@ export const getUser = (id: number) => {
 }
 
 export const hashPassword = (password: string) => {
-  return Password.hashSync(password);
+  // return Password.hashSync(password);
+  return argon2.hash(password);
 }
 
 export const verifyPassword = (password: string, hash: string) => {
-  return Password.verifySync(password, hash);
+  return argon2.verify(hash, password);
+  // return Password.verifySync(password, hash);
 }
