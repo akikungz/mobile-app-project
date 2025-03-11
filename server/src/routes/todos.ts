@@ -7,7 +7,7 @@ import { todosTable } from "@/db/schema";
 import { middleware } from "@/libs/jwt";
 import { omit } from "@/libs/function";
 
-export default new Elysia({ prefix: "/todos" })
+export const todos = new Elysia({ prefix: "/todos" })
   .use(middleware)
   .get("/", async ({ jwt, cookie: { accessToken }, error }) => {
     const data = await jwt.verify(accessToken.value);

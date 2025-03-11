@@ -1,4 +1,4 @@
-FROM oven/bun:1.2 AS base
+FROM oven/bun:1.2-slim AS base
 
 # Install the necessary packages
 WORKDIR /app
@@ -9,25 +9,15 @@ RUN bun install
 COPY . /app
 RUN bun db:generate
 
-RUN bun build --target=node ./src/index.ts --outfile ./app.js
+RUN bun build --compile --target=bun ./src/index.ts --outfile ./app
 
-# FROM debian:stable-slim AS final
+# CMD [ "bun", "run", "index.ts" ]
 
-# WORKDIR /app
+FROM debian:stable-slim AS final
 
-# COPY --from=base /app/app /app
+WORKDIR /app
+
+COPY --from=base /app/app /app
 
 # EXPOSE 3001/tcp
-# CMD ["/app/app"]
-
-FROM node:22-alpine AS runner
-
-# Install the necessary packages
-WORKDIR /app
-COPY package.json /app/package.json
-
-RUN npm install
-
-COPY --from=base /app/app.js /app/app.js
-
-CMD [ "node", "app.js" ]
+CMD ["/app/app"]
