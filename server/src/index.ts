@@ -15,7 +15,6 @@ export const app = new Elysia()
   .onAfterResponse((ctx) => console.log(`[${ctx.request.method}] ${ctx.path} ${ctx.set.status} ${ctx.request.body?.toString()}`))
   .use(users)
   .use(todos)
-  // .listen(env.PORT, ({ port }) => console.log(`Server is running on ${port}`));
 
 env.NODE_ENV == "development" && app.listen(env.PORT, ({ port }) => console.log(`Server is running on ${port}`));
 

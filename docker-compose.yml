@@ -6,7 +6,8 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     env_file:
-      - .env
+      - path: .env
+        required: false
     ports:
       - "5432:5432"
     volumes:
@@ -26,7 +27,8 @@ services:
       - NODE_ENV=production
       - DATABASE_URI=${DATABASE_URI:-postgres://postgres:postgres@db:5432/postgres}
     env_file:
-      - .env
+      - path: .env
+        required: false
     depends_on:
       - db
     deploy:
