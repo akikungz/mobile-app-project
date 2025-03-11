@@ -16,6 +16,18 @@ services:
         limit:
           cpus: '0.5'
           memory: 512M
+  
+  server: 
+    build: ./server
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - DATABASE_URI=${DATABASE_URI:-postgres://postgres:postgres@db:5432/postgres}
+    env_file:
+      - .env
+    depends_on:
+      - postgres
 
 volumes:
   db-data:
