@@ -4,11 +4,13 @@ import { swagger } from "@elysiajs/swagger";
 import { users } from "@/routes/users";
 import todos from "@/routes/todos";
 
+import { env } from "@/libs/env";
+
 export const app = new Elysia()
   .use(swagger())
   .use(users)
   .use(todos)
-  .listen(3000, ({ port }) => console.log(`Server is running on ${port}`));
+  .listen(env.PORT, ({ port }) => console.log(`Server is running on ${port}`));
 
 export type App = typeof app;
 
