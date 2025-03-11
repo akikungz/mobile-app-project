@@ -14,4 +14,4 @@ COPY . /app
 EXPOSE 3000
 
 # Start the server
-CMD ["bun", "start"]
+CMD ["bun", "run", "src/index.ts"]

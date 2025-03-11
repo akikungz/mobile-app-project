@@ -13,9 +13,9 @@ services:
       - db-data:/var/lib/postgresql/data
     deploy:
       resources:
-        limit:
-          cpus: '0.5'
-          memory: 512M
+        limits:
+          cpus: '0.25'
+          memory: 256M
   
   server: 
     build: ./server
@@ -28,6 +28,11 @@ services:
       - .env
     depends_on:
       - postgres
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 256M
 
 volumes:
   db-data:
