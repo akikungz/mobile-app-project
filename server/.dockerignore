@@ -44,3 +44,6 @@ package-lock.json
 # .env
 .env
 !.env.example
+
+# Docker
+Dockerfile
