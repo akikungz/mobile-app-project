@@ -19,4 +19,4 @@ COPY --from=base /app/myapp /app/myapp
 
 EXPOSE 3000
 
-CMD [ "./myapp" ]
+CMD [ "/app/myapp" ]
