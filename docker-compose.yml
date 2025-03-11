@@ -23,6 +23,7 @@ services:
       - "3001:3001"
     environment:
       - PORT=3001
+      - NODE_ENV=production
       - DATABASE_URI=${DATABASE_URI:-postgres://postgres:postgres@db:5432/postgres}
     env_file:
       - .env
