@@ -74,3 +74,19 @@ export const todos = new Elysia({ prefix: "/todos" })
       id: t.Integer(),
     }),
   })
+  .delete("/:id", async ({ params, jwt, cookie: { accessToken }, error }) => {
+    const data = await jwt.verify(accessToken.value);
+    if (!data) {
+      return error("Unauthorized", 401);
+    }
+
+    await db.delete(todosTable).where(
+      and(eq(todosTable.id, params.id), eq(todosTable.user_id, data.id))
+    );
+
+    return { id: params.id };
+  }, {
+    params: t.Object({
+      id: t.Integer(),
+    }),
+  });
