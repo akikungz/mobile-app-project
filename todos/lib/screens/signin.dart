@@ -20,7 +20,7 @@ class _SigninScreenState extends State<SigninScreen> {
       appBar: AppBar(
         title: Text('Sign in'),
       ),
-      body: Center(
+      body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(64),
           child: Column(
@@ -34,6 +34,7 @@ class _SigninScreenState extends State<SigninScreen> {
                 decoration: InputDecoration(
                   labelText: 'Email',
                 ),
+                keyboardType: TextInputType.emailAddress,
               ),
               TextField(
                 controller: passwordController,
@@ -106,7 +107,7 @@ class _SigninScreenState extends State<SigninScreen> {
                   Text('Don\'t have an account?'),
                   TextButton(
                     onPressed: () {
-                      Navigator.of(context).push(
+                      Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (context) => SignupScreen())
                       );
                     },

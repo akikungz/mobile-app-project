@@ -68,10 +68,13 @@ class _HomeScreenState extends State<HomeScreen> {
           appBar: AppBar(
             title: Text('Todos'),
           ),
-          body: Center(
+          body: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                SizedBox(height: 20),
+                Icon(Icons.check_circle, size: 100),
+                SizedBox(height: 20),
                 Text('Welcome to Todos', style: TextStyle(fontSize: 24)),
                 SizedBox(height: 20),
                 Row(
