@@ -10,7 +10,8 @@ import { env } from "@/libs/env";
 export const app = new Elysia()
   .use(swagger())
   .use(cors({
-    origin: "*"
+    origin: "*",
+    credentials: true,
   }))
   .onAfterResponse((ctx) => console.log(`[${ctx.request.method}] ${ctx.path} ${ctx.set.status} ${ctx.request.body?.toString()}`))
   .use(users)
